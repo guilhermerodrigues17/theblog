@@ -9,7 +9,7 @@ export async function PostsList() {
     <div className='grid grid-cols-1 gap-8 sm:grid-cols-2 lg:grid-cols-3'>
       {posts.map(post => {
         return (
-          <div className='flex flex-col gap-4 group' key={post.id}>
+          <div className='flex flex-col gap-4 mb-4 group' key={post.id}>
             <PostCoverImage
               href={`/post/${post.slug}`}
               alt={post.title}
@@ -18,7 +18,7 @@ export async function PostsList() {
               height={720}
             />
 
-            <div className='flex flex-col gap-4 sm: justify-center'>
+            <div className='flex flex-col gap-4 sm:justify-center'>
               <time
                 className='text-slate-600 block text-sm/tight'
                 dateTime={post.createdAt}

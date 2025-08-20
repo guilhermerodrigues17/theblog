@@ -21,7 +21,7 @@ export default async function Home() {
           priority={true}
         />
 
-        <div className='flex flex-col gap-4 sm: justify-center'>
+        <div className='flex flex-col gap-4 sm:justify-center'>
           <time
             className='text-slate-600 block text-sm/tight'
             dateTime='2025-08-19'
