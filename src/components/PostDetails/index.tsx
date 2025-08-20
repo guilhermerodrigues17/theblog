@@ -1,5 +1,6 @@
 import React from 'react';
 import { PostHeading } from '../PostHeading';
+import { formatDatetime, formatRelativeDate } from '@/utils/format-datetime';
 
 type PostDetailsProps = {
   createdAt: string;
@@ -17,8 +18,12 @@ export function PostDetails({
 }: PostDetailsProps) {
   return (
     <div className='flex flex-col gap-4 sm:justify-center'>
-      <time className='text-slate-600 block text-sm/tight' dateTime={createdAt}>
-        {createdAt}
+      <time
+        className='text-slate-600 block text-sm/tight'
+        dateTime={createdAt}
+        title={formatRelativeDate(createdAt)}
+      >
+        {formatDatetime(createdAt)}
       </time>
 
       <PostHeading as={as} url={`/post/${slug}`}>
