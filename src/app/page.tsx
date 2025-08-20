@@ -1,10 +1,9 @@
 import { Container } from '@/components/Container';
 import { Header } from '@/components/Header';
+import { PostCoverImage } from '@/components/PostCoverImage';
 import { PostHeading } from '@/components/PostHeading';
 import { PostsList } from '@/components/PostsList';
 import { SpinLoader } from '@/components/SpinLoader';
-import Image from 'next/image';
-import Link from 'next/link';
 import { Suspense } from 'react';
 
 export default async function Home() {
@@ -13,16 +12,15 @@ export default async function Home() {
       <Header />
 
       <section className='grid grid-cols-1 gap-8 mb-16 sm:grid-cols-2 group'>
-        <Link className='w-full h-full overflow-hidden rounded-xl' href='#'>
-          <Image
-            className='w-full h-full object-cover object-center group-hover:scale-105 transition'
-            src='/images/bryen_0.png'
-            alt='Post image'
-            width={1200}
-            height={720}
-            priority
-          />
-        </Link>
+        <PostCoverImage
+          alt='Post image'
+          href='#'
+          src='/images/bryen_9.png'
+          width={1200}
+          height={720}
+          priority={true}
+        />
+
         <div className='flex flex-col gap-4 sm: justify-center'>
           <time
             className='text-slate-600 block text-sm/tight'
