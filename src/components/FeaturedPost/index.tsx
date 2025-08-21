@@ -1,25 +1,28 @@
+import { findAllPublicPosts } from '@/lib/post/queries';
 import { PostCoverImage } from '../PostCoverImage';
 import { PostDetails } from '../PostDetails';
 
-export function FeaturedPost() {
+export async function FeaturedPost() {
+  const posts = await findAllPublicPosts();
+  const post = posts[0];
+  const postLink = `/post/${post.slug}`;
+
   return (
     <section className='grid grid-cols-1 gap-8 mb-16 sm:grid-cols-2 group'>
       <PostCoverImage
-        alt='Post image'
-        href='#'
-        src='/images/bryen_9.png'
+        alt={post.title}
+        href={postLink}
+        src={post.coverImageUrl}
         width={1200}
         height={720}
         priority={true}
       />
 
       <PostDetails
-        createdAt='2025-08-19T00:00:00.000Z'
-        postLink='#'
-        title='Lorem ipsum dolor sit amet consectetur'
-        excerpt='Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vitae optio
-          facere nobis rerum provident ea. Natus nam debitis commodi provident
-          omnis maiores nostrum rem sed, quos dolores consectetur nisi dicta!'
+        createdAt={post.createdAt}
+        postLink={postLink}
+        title={post.title}
+        excerpt={post.excerpt}
         as='h1'
       />
     </section>
