@@ -4,14 +4,14 @@ import { formatDatetime, formatRelativeDate } from '@/utils/format-datetime';
 
 type PostDetailsProps = {
   createdAt: string;
-  slug: string;
+  postLink: string;
   title: string;
   excerpt: string;
 } & Pick<React.ComponentProps<typeof PostHeading>, 'as'>;
 
 export function PostDetails({
   createdAt,
-  slug,
+  postLink,
   title,
   excerpt,
   as,
@@ -26,7 +26,7 @@ export function PostDetails({
         {formatDatetime(createdAt)}
       </time>
 
-      <PostHeading as={as} url={`/post/${slug}`}>
+      <PostHeading as={as} url={postLink}>
         {title}
       </PostHeading>
 

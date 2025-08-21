@@ -15,7 +15,7 @@ export function FeaturedPost() {
 
       <PostDetails
         createdAt='2025-08-19T00:00:00.000Z'
-        slug='#'
+        postLink='#'
         title='Lorem ipsum dolor sit amet consectetur'
         excerpt='Lorem ipsum dolor sit amet consectetur, adipisicing elit. Vitae optio
           facere nobis rerum provident ea. Natus nam debitis commodi provident
