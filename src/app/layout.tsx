@@ -21,12 +21,7 @@ export default function RootLayout({
       <body>
         <Container>
           <Header />
-
           {children}
-
-          <footer>
-            <h1 className='text-center font-bold text-6xl'>Footer</h1>
-          </footer>
         </Container>
       </body>
     </html>
