@@ -7,8 +7,10 @@ type ContainerProps = {
 
 export function Container({ children }: ContainerProps) {
   return (
-    <div className='bg-slate-100 text-slate-900 min-h-screen'>
-      <div className='max-w-screen-lg px-8 mx-auto'>{children}</div>
+    <div className='bg-slate-100 text-slate-900 min-h-screen flex flex-col'>
+      <div className='max-w-screen-lg px-8 mx-auto w-full flex-1'>
+        {children}
+      </div>
 
       <Footer />
     </div>
