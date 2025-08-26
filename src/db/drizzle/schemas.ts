@@ -8,7 +8,7 @@ export const postsTable = pgTable('posts', {
   author: text('author').notNull(),
   excerpt: text('excerpt').notNull(),
   content: text('content').notNull(),
-  coverImgUrl: text('cover_img_url').notNull(),
+  coverImageUrl: text('cover_image_url').notNull(),
   published: boolean('published').notNull().default(false),
   createdAt: text('created_at').notNull(),
   updatedAt: text('updated_at').notNull(),
