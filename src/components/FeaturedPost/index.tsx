@@ -1,9 +1,16 @@
 import { findAllPublicPostsCached } from '@/lib/post/queries/public';
 import { PostCoverImage } from '../PostCoverImage';
 import { PostDetails } from '../PostDetails';
+import { ErrorMessage } from '../ErrorMessage';
 
 export async function FeaturedPost() {
   const posts = await findAllPublicPostsCached();
+  if (posts.length <= 0) {
+    return (
+      <ErrorMessage contentTitle='Ops.' content='Nenhum post foi encontrado.' />
+    );
+  }
+
   const post = posts[0];
   const postLink = `/post/${post.slug}`;
 

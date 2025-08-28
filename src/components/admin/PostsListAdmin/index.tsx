@@ -2,9 +2,19 @@ import { findAllPostsAdmin } from '@/lib/post/queries/admin';
 import clsx from 'clsx';
 import Link from 'next/link';
 import { DeletePostBtn } from '../DeletePostBtn';
+import { ErrorMessage } from '@/components/ErrorMessage';
 
 export default async function PostsListAdmin() {
   const posts = await findAllPostsAdmin();
+
+  if (posts.length <= 0) {
+    return (
+      <ErrorMessage
+        contentTitle='📝'
+        content='Você ainda não escreveu nenhum post...'
+      />
+    );
+  }
 
   return (
     <div className='flex flex-col gap-4'>
