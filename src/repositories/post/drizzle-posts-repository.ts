@@ -3,6 +3,8 @@ import { PostRepository } from './post-repository';
 import { db } from '@/db/drizzle';
 import { asyncDelay } from '@/utils/async-delay';
 import { RESPONSE_DELAY_IN_MS } from '@/lib/constants';
+import { postsTable } from '@/db/drizzle/schemas';
+import { eq } from 'drizzle-orm';
 
 export class DrizzlePostsRepository implements PostRepository {
   async findAllPublic(): Promise<PostModel[]> {
@@ -46,6 +48,15 @@ export class DrizzlePostsRepository implements PostRepository {
     });
 
     if (!post) throw new Error('resource not found');
+
+    return post;
+  }
+
+  async deletePost(id: string): Promise<PostModel> {
+    await asyncDelay(RESPONSE_DELAY_IN_MS, true);
+
+    const post = await this.findById(id);
+    await db.delete(postsTable).where(eq(postsTable.id, post.id));
 
     return post;
   }
