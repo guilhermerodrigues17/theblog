@@ -2,6 +2,7 @@ import type { Metadata } from 'next';
 import './globals.css';
 import { Container } from '@/components/Container';
 import { Header } from '@/components/Header';
+import { ToastifyContainer } from '@/components/ToastifyContainer';
 
 export const metadata: Metadata = {
   title: {
@@ -23,6 +24,8 @@ export default function RootLayout({
           <Header />
           {children}
         </Container>
+
+        <ToastifyContainer />
       </body>
     </html>
   );
