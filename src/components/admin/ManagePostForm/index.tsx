@@ -6,9 +6,14 @@ import { InputCheckbox } from '@/components/InputCheckbox';
 import { MarkdownEditor } from '@/components/MarkdownEditor';
 import { useState } from 'react';
 import { ImageUploader } from '../ImageUploader';
+import { PostDto } from '@/dto/post/dto';
 
-export function ManagePostForm() {
-  const [contentValue, setContentValue] = useState('');
+type ManagePostFormProps = {
+  post?: PostDto;
+};
+
+export function ManagePostForm({ post }: ManagePostFormProps) {
+  const [contentValue, setContentValue] = useState(post?.content || '');
   return (
     <form action=''>
       <div className='flex flex-col gap-6'>
@@ -18,7 +23,7 @@ export function ManagePostForm() {
           placeholder='ID gerado automaticamente'
           name='id'
           readOnly
-          defaultValue={''}
+          defaultValue={post?.id || ''}
         />
 
         <DefaultInput
@@ -27,7 +32,7 @@ export function ManagePostForm() {
           placeholder='Slug gerado automaticamente'
           name='slug'
           readOnly
-          defaultValue={''}
+          defaultValue={post?.slug || ''}
         />
 
         <DefaultInput
@@ -35,7 +40,7 @@ export function ManagePostForm() {
           labelText='Autor'
           placeholder='Escreva o nome do autor do post...'
           name='author'
-          defaultValue={''}
+          defaultValue={post?.author || ''}
         />
 
         <DefaultInput
@@ -43,7 +48,7 @@ export function ManagePostForm() {
           labelText='Título'
           placeholder='Escreva um título para o seu post...'
           name='title'
-          defaultValue={''}
+          defaultValue={post?.title || ''}
         />
 
         <DefaultInput
@@ -51,7 +56,7 @@ export function ManagePostForm() {
           labelText='Resumo'
           placeholder='Escreva um resumo para o seu post...'
           name='excerpt'
-          defaultValue={''}
+          defaultValue={post?.excerpt || ''}
         />
 
         <MarkdownEditor
@@ -69,10 +74,15 @@ export function ManagePostForm() {
           labelText='URL da imagem de capa'
           placeholder='Escreva a url da imagem'
           name='coverImageUrl'
-          defaultValue={''}
+          defaultValue={post?.coverImageUrl || ''}
         />
 
-        <InputCheckbox type='checkbox' labelText='Publicar?' name='published' />
+        <InputCheckbox
+          type='checkbox'
+          labelText='Publicar?'
+          name='published'
+          defaultChecked={post?.published || false}
+        />
 
         <div className='mt-6'>
           <DefaultButton type='submit'>Enviar</DefaultButton>
