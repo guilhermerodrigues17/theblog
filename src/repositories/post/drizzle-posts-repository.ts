@@ -60,4 +60,11 @@ export class DrizzlePostsRepository implements PostRepository {
 
     return post;
   }
+
+  async createPost(post: PostModel): Promise<PostModel> {
+    await asyncDelay(RESPONSE_DELAY_IN_MS, true);
+
+    await db.insert(postsTable).values(post);
+    return post;
+  }
 }

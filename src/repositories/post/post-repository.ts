@@ -9,4 +9,5 @@ export interface PostRepository {
 
   //Write operations
   deletePost(id: string): Promise<PostModel>;
+  createPost(post: PostModel): Promise<PostModel>;
 }
