@@ -9,19 +9,45 @@ import { ImageUploader } from '../ImageUploader';
 import { makePartialPostDto, PostDto } from '@/dto/post/general-dto';
 import { createPostAction } from '@/actions/post/create-post-action';
 import { toast } from 'react-toastify';
+import { updatePostAction } from '@/actions/post/update-post-action';
+import { useRouter, useSearchParams } from 'next/navigation';
 
-type ManagePostFormProps = {
-  post?: PostDto;
+type ManagePostCreateFormProps = {
+  mode: 'create';
 };
 
-export function ManagePostForm({ post }: ManagePostFormProps) {
+type ManagePostUpdateFormProps = {
+  mode: 'update';
+  post: PostDto;
+};
+
+type ManagePostFormProps =
+  | ManagePostCreateFormProps
+  | ManagePostUpdateFormProps;
+
+export function ManagePostForm(props: ManagePostFormProps) {
+  const { mode } = props;
+  let post;
+  if (mode === 'update') {
+    post = props.post;
+  }
+
+  const searchParams = useSearchParams();
+  const createdParam = searchParams.get('created');
+  const router = useRouter();
+
+  const actionsMap = {
+    update: updatePostAction,
+    create: createPostAction,
+  };
+
   const initialState = {
     formState: makePartialPostDto(post),
     errors: [],
   };
 
   const [state, action, isPending] = useActionState(
-    createPostAction,
+    actionsMap[mode],
     initialState,
   );
 
@@ -31,6 +57,23 @@ export function ManagePostForm({ post }: ManagePostFormProps) {
       state.errors.forEach(error => toast.error(error));
     }
   }, [state.errors]);
+
+  useEffect(() => {
+    if (state.success) {
+      toast.dismiss();
+      toast.success('Post atualizado com sucesso!');
+    }
+  }, [state]);
+
+  useEffect(() => {
+    if (createdParam === '1') {
+      toast.dismiss();
+      toast.success('Post criado com sucesso!');
+      const url = new URL(window.location.href);
+      url.searchParams.delete('created');
+      router.replace(url.toString());
+    }
+  }, [createdParam, router]);
 
   const { formState } = state;
   const [contentValue, setContentValue] = useState(post?.content || '');

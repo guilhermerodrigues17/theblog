@@ -27,7 +27,7 @@ export default async function AdminPostIdPage({
   return (
     <div className='flex flex-col gap-4'>
       <h1 className='text-xl font-bold'>Editar post</h1>
-      <ManagePostForm post={postDto} />
+      <ManagePostForm mode='update' post={postDto} />
     </div>
   );
 }
