@@ -17,11 +17,12 @@ export async function deletePostAction(id: string) {
 
     revalidateTag('posts');
     revalidateTag(`post-${postDeleted.slug}`);
-  } catch (e) {
-    console.log(e);
-    return {
-      error: 'O post não foi encontrado',
-    };
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      return {
+        error: e.message,
+      };
+    }
   }
 
   return {

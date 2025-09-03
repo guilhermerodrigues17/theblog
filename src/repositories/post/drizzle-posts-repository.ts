@@ -47,7 +47,7 @@ export class DrizzlePostsRepository implements PostRepository {
       where: (post, { eq }) => eq(post.id, id),
     });
 
-    if (!post) throw new Error('resource not found');
+    if (!post) throw new Error('Post não encontrado');
 
     return post;
   }
