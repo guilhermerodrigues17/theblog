@@ -10,3 +10,8 @@ export type PostModel = {
   updatedAt: string;
   author: string;
 };
+
+export type UpdatePostModel = Omit<
+  PostModel,
+  'id' | 'slug' | 'createdAt' | 'updatedAt'
+>;
