@@ -64,6 +64,16 @@ export class DrizzlePostsRepository implements PostRepository {
   async createPost(post: PostModel): Promise<PostModel> {
     await asyncDelay(RESPONSE_DELAY_IN_MS, true);
 
+    const postExists = await db.query.postsTable.findFirst({
+      where: (postFound, { or, eq }) =>
+        or(eq(postFound.id, post.id), eq(postFound.slug, post.slug)),
+      columns: { id: true },
+    });
+
+    if (postExists) {
+      throw new Error('Um post com esse ID ou Slug já existe na base de dados');
+    }
+
     await db.insert(postsTable).values(post);
     return post;
   }

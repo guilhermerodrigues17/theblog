@@ -46,8 +46,21 @@ export async function createPostAction(
     slug: makeSlugFromTitle(validPostData.title),
   };
 
-  const createdPost = await postRepository.createPost(newPost);
+  try {
+    await postRepository.createPost(newPost);
+  } catch (e: unknown) {
+    if (e instanceof Error) {
+      return {
+        formState: newPost,
+        errors: [e.message],
+      };
+    }
+    return {
+      formState: newPost,
+      errors: ['Ocorreu um erro...'],
+    };
+  }
 
   revalidateTag('posts');
-  redirect(`/admin/post/${createdPost.id}`);
+  redirect(`/admin/post/${newPost.id}`);
 }
