@@ -1,4 +1,4 @@
-import { PostModel } from '@/models/post/post-model';
+import { PostModel, UpdatePostModel } from '@/models/post/post-model';
 
 export interface PostRepository {
   //Read operations
@@ -10,4 +10,5 @@ export interface PostRepository {
   //Write operations
   deletePost(id: string): Promise<PostModel>;
   createPost(post: PostModel): Promise<PostModel>;
+  updatePost(id: string, updatePostData: UpdatePostModel): Promise<PostModel>;
 }

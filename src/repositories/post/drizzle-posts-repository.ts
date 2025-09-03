@@ -1,4 +1,4 @@
-import { PostModel } from '@/models/post/post-model';
+import { PostModel, UpdatePostModel } from '@/models/post/post-model';
 import { PostRepository } from './post-repository';
 import { db } from '@/db/drizzle';
 import { asyncDelay } from '@/utils/async-delay';
@@ -76,5 +76,27 @@ export class DrizzlePostsRepository implements PostRepository {
 
     await db.insert(postsTable).values(post);
     return post;
+  }
+
+  async updatePost(
+    id: string,
+    updatePostData: UpdatePostModel,
+  ): Promise<PostModel> {
+    await asyncDelay(RESPONSE_DELAY_IN_MS, true);
+
+    const postFound = await this.findById(id);
+    const updatedAt = new Date().toISOString();
+
+    const updateData = {
+      ...updatePostData,
+      updatedAt,
+    };
+
+    await db.update(postsTable).set(updateData).where(eq(postsTable.id, id));
+
+    return {
+      ...postFound,
+      ...updateData,
+    };
   }
 }
