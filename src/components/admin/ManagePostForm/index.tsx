@@ -6,7 +6,7 @@ import { InputCheckbox } from '@/components/InputCheckbox';
 import { MarkdownEditor } from '@/components/MarkdownEditor';
 import { useActionState, useEffect, useState } from 'react';
 import { ImageUploader } from '../ImageUploader';
-import { makePartialPostDto, PostDto } from '@/dto/post/dto';
+import { makePartialPostDto, PostDto } from '@/dto/post/general-dto';
 import { createPostAction } from '@/actions/post/create-post-action';
 import { toast } from 'react-toastify';
 

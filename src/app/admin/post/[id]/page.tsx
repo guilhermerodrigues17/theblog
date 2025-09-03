@@ -1,5 +1,5 @@
 import { ManagePostForm } from '@/components/admin/ManagePostForm';
-import { makePostDto } from '@/dto/post/dto';
+import { makePostDto } from '@/dto/post/general-dto';
 import { postRepository } from '@/repositories/post';
 import { Metadata } from 'next';
 import { notFound } from 'next/navigation';

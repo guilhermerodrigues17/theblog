@@ -1,6 +1,6 @@
 'use server';
 
-import { makePartialPostDto, PostDto } from '@/dto/post/dto';
+import { makePartialPostDto, PostDto } from '@/dto/post/general-dto';
 import { PostCreateSchema } from '@/lib/post/validations';
 import { PostModel } from '@/models/post/post-model';
 import { postRepository } from '@/repositories/post';
