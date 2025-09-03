@@ -45,6 +45,7 @@ export function ManagePostForm({ post }: ManagePostFormProps) {
           name='id'
           readOnly
           defaultValue={formState.id}
+          disabled={isPending}
         />
 
         <DefaultInput
@@ -54,6 +55,7 @@ export function ManagePostForm({ post }: ManagePostFormProps) {
           name='slug'
           readOnly
           defaultValue={formState.slug}
+          disabled={isPending}
         />
 
         <DefaultInput
@@ -62,6 +64,7 @@ export function ManagePostForm({ post }: ManagePostFormProps) {
           placeholder='Escreva o nome do autor do post...'
           name='author'
           defaultValue={formState.author}
+          disabled={isPending}
         />
 
         <DefaultInput
@@ -70,6 +73,7 @@ export function ManagePostForm({ post }: ManagePostFormProps) {
           placeholder='Escreva um título para o seu post...'
           name='title'
           defaultValue={formState.title}
+          disabled={isPending}
         />
 
         <DefaultInput
@@ -78,6 +82,7 @@ export function ManagePostForm({ post }: ManagePostFormProps) {
           placeholder='Escreva um resumo para o seu post...'
           name='excerpt'
           defaultValue={formState.excerpt}
+          disabled={isPending}
         />
 
         <MarkdownEditor
@@ -85,10 +90,10 @@ export function ManagePostForm({ post }: ManagePostFormProps) {
           value={contentValue}
           setValue={setContentValue}
           textAreaName='content'
-          disabled={false}
+          disabled={isPending}
         />
 
-        <ImageUploader />
+        <ImageUploader disabled={isPending} />
 
         <DefaultInput
           type='text'
@@ -96,6 +101,7 @@ export function ManagePostForm({ post }: ManagePostFormProps) {
           placeholder='Escreva a url da imagem'
           name='coverImageUrl'
           defaultValue={formState.coverImageUrl}
+          disabled={isPending}
         />
 
         <InputCheckbox
@@ -103,10 +109,13 @@ export function ManagePostForm({ post }: ManagePostFormProps) {
           labelText='Publicar?'
           name='published'
           defaultChecked={formState.published}
+          disabled={isPending}
         />
 
         <div className='mt-6'>
-          <DefaultButton type='submit'>Enviar</DefaultButton>
+          <DefaultButton type='submit' disabled={isPending}>
+            Enviar
+          </DefaultButton>
         </div>
       </div>
     </form>
