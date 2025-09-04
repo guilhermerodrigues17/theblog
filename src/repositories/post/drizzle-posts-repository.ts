@@ -2,13 +2,14 @@ import { PostModel, UpdatePostModel } from '@/models/post/post-model';
 import { PostRepository } from './post-repository';
 import { db } from '@/db/drizzle';
 import { asyncDelay } from '@/utils/async-delay';
-import { RESPONSE_DELAY_IN_MS } from '@/lib/constants';
 import { postsTable } from '@/db/drizzle/schemas';
 import { eq } from 'drizzle-orm';
 
+const responseDelayInMS = Number(process.env.RESPONSE_DELAY_IN_MS) || 0;
+
 export class DrizzlePostsRepository implements PostRepository {
   async findAllPublic(): Promise<PostModel[]> {
-    await asyncDelay(RESPONSE_DELAY_IN_MS, true);
+    await asyncDelay(responseDelayInMS, true);
 
     const posts = await db.query.postsTable.findMany({
       orderBy: (posts, { desc }) => desc(posts.createdAt),
@@ -19,7 +20,7 @@ export class DrizzlePostsRepository implements PostRepository {
   }
 
   async findBySlugPublic(slug: string): Promise<PostModel> {
-    await asyncDelay(RESPONSE_DELAY_IN_MS, true);
+    await asyncDelay(responseDelayInMS, true);
 
     const post = await db.query.postsTable.findFirst({
       where: (post, { eq, and }) =>
@@ -32,7 +33,7 @@ export class DrizzlePostsRepository implements PostRepository {
   }
 
   async findAll(): Promise<PostModel[]> {
-    await asyncDelay(RESPONSE_DELAY_IN_MS, true);
+    await asyncDelay(responseDelayInMS, true);
 
     const posts = await db.query.postsTable.findMany({
       orderBy: (posts, { desc }) => desc(posts.createdAt),
@@ -41,7 +42,7 @@ export class DrizzlePostsRepository implements PostRepository {
   }
 
   async findById(id: string): Promise<PostModel> {
-    await asyncDelay(RESPONSE_DELAY_IN_MS, true);
+    await asyncDelay(responseDelayInMS, true);
 
     const post = await db.query.postsTable.findFirst({
       where: (post, { eq }) => eq(post.id, id),
@@ -53,7 +54,7 @@ export class DrizzlePostsRepository implements PostRepository {
   }
 
   async deletePost(id: string): Promise<PostModel> {
-    await asyncDelay(RESPONSE_DELAY_IN_MS, true);
+    await asyncDelay(responseDelayInMS, true);
 
     const post = await this.findById(id);
     await db.delete(postsTable).where(eq(postsTable.id, post.id));
@@ -62,7 +63,7 @@ export class DrizzlePostsRepository implements PostRepository {
   }
 
   async createPost(post: PostModel): Promise<PostModel> {
-    await asyncDelay(RESPONSE_DELAY_IN_MS, true);
+    await asyncDelay(responseDelayInMS, true);
 
     const postExists = await db.query.postsTable.findFirst({
       where: (postFound, { or, eq }) =>
@@ -82,7 +83,7 @@ export class DrizzlePostsRepository implements PostRepository {
     id: string,
     updatePostData: UpdatePostModel,
   ): Promise<PostModel> {
-    await asyncDelay(RESPONSE_DELAY_IN_MS, true);
+    await asyncDelay(responseDelayInMS, true);
 
     const postFound = await this.findById(id);
     const updatedAt = new Date().toISOString();
