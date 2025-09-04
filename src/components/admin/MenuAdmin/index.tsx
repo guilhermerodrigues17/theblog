@@ -1,19 +1,23 @@
 'use client';
+import { logoutAction } from '@/actions/login/logout-action';
 import clsx from 'clsx';
 import {
   FileTextIcon,
   HomeIcon,
+  HourglassIcon,
+  LogOutIcon,
   MenuIcon,
   PlusCircleIcon,
   XIcon,
 } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import { useEffect, useState } from 'react';
+import React, { useEffect, useState, useTransition } from 'react';
 
 export function MenuAdmin() {
   const [isExpanded, setIsExpanded] = useState(false);
   const pathname = usePathname();
+  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     setIsExpanded(false);
@@ -23,7 +27,7 @@ export function MenuAdmin() {
     'flex items-center justify-between gap-4 mb-8',
     'transition-all duration-500 ease-in-out',
     isExpanded ? 'w-full' : 'w-15',
-    'overflow-hidden',
+    'overflow-x-scroll scrollbar-hide',
     'sm:justify-start sm:gap-12',
   );
 
@@ -41,6 +45,13 @@ export function MenuAdmin() {
     'cursor-pointer z-10 hover:bg-slate-800 ',
     'transition-all duration-300',
   );
+
+  function handleLogout(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
+    e.preventDefault();
+    startTransition(async () => {
+      logoutAction();
+    });
+  }
 
   return (
     <nav className={navStyles}>
@@ -67,6 +78,20 @@ export function MenuAdmin() {
       <Link className={linkStyles} href='/admin/post/new'>
         <PlusCircleIcon size={20} />
       </Link>
+
+      <a href='#' className={linkStyles} onClick={handleLogout}>
+        {isPending && (
+          <>
+            <HourglassIcon size={20} />
+          </>
+        )}
+
+        {!isPending && (
+          <>
+            <LogOutIcon size={20} />
+          </>
+        )}
+      </a>
     </nav>
   );
 }

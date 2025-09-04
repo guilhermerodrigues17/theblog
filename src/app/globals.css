@@ -1,2 +1,12 @@
 @import 'tailwindcss';
 @plugin "@tailwindcss/typography";
+
+/* Chrome, Safari e Edge */
+.scrollbar-hide::-webkit-scrollbar {
+  display: none;
+}
+
+/* Firefox */
+.scrollbar-hide {
+  scrollbar-width: none;
+}
