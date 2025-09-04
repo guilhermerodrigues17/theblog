@@ -1,10 +1,17 @@
 'use server';
 
+import { verifyLoginSession } from '@/lib/login/manage-login';
 import { postRepository } from '@/repositories/post';
 import { revalidateTag } from 'next/cache';
 
 export async function deletePostAction(id: string) {
-  //TODO: check user auth
+  const isAuthenticated = await verifyLoginSession();
+
+  if (!isAuthenticated) {
+    return {
+      error: 'Sua sessão expirou! Refaça o login em outra aba',
+    };
+  }
 
   if (!id || typeof id !== 'string') {
     return {

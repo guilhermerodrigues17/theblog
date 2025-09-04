@@ -5,6 +5,7 @@ import {
   makePostDto,
   PostDto,
 } from '@/dto/post/general-dto';
+import { verifyLoginSession } from '@/lib/login/manage-login';
 import { PostUpdateSchema } from '@/lib/post/validations';
 import { postRepository } from '@/repositories/post';
 import { getZodMessageError } from '@/utils/get-zod-error-message';
@@ -20,6 +21,8 @@ export async function updatePostAction(
   prevState: UpdatePostActionState,
   formData: FormData,
 ): Promise<UpdatePostActionState> {
+  const isAuthenticated = await verifyLoginSession();
+
   if (!(formData instanceof FormData)) {
     return {
       formState: prevState.formState,
@@ -37,6 +40,13 @@ export async function updatePostAction(
 
   const formDataToObj = Object.fromEntries(formData.entries());
   const zodParsedObj = PostUpdateSchema.safeParse(formDataToObj);
+
+  if (!isAuthenticated) {
+    return {
+      errors: ['Sua sessão expirou! Refaça o login em outra aba'],
+      formState: makePartialPostDto(formDataToObj),
+    };
+  }
 
   if (!zodParsedObj.success) {
     const errors = getZodMessageError(zodParsedObj.error);

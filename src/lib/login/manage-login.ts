@@ -1,6 +1,7 @@
 import bcrypt from 'bcryptjs';
 import { cookies } from 'next/headers';
 import { SignJWT, jwtVerify } from 'jose';
+import { redirect } from 'next/navigation';
 
 const loginExpSeconds = Number(process.env.LOGIN_EXPIRATION_SECONDS) || 86400;
 const loginExpString = process.env.LOGIN_EXPIRATION_STRING || '1d';
@@ -43,6 +44,23 @@ export async function deleteLoginSession() {
   const cookieStore = await cookies();
   cookieStore.set(loginCookieName, '', { expires: new Date(0) });
   cookieStore.delete(loginCookieName);
+}
+
+export async function verifyLoginSession() {
+  const cookieStore = await cookies();
+
+  const jwt = cookieStore.get(loginCookieName)?.value;
+  if (!jwt) return false;
+
+  return verifyJwt(jwt);
+}
+
+export async function requireLoginSessionOrRedirect() {
+  const isAuthenticated = await verifyLoginSession();
+
+  if (!isAuthenticated) {
+    redirect('/admin/login');
+  }
 }
 
 export async function signJwt(jwtPayload: JwtPayload) {
