@@ -1,12 +1,13 @@
 import { JsonPostRepository } from '@/repositories/post/json-post-repository';
-import { postsTable } from './schemas';
+import { postgresPostsTable } from './schemas/postgres-schemas';
 import dotenv from 'dotenv';
 import path from 'path';
 import { Pool } from 'pg';
-import { drizzle } from 'drizzle-orm/node-postgres';
-import * as schema from './schemas';
+import { NodePgDatabase } from 'drizzle-orm/node-postgres';
+import { getDbInstance, postgresDb, sqliteDb } from '.';
+import { sqlitePostsTable } from './schemas/sqlite-schemas';
 
-dotenv.config({ path: path.resolve(process.cwd(), '.env.local') });
+dotenv.config({ path: path.resolve(process.cwd(), '.env') });
 const databaseUrl = process.env.DATABASE_URL;
 
 const pool = new Pool({
@@ -14,7 +15,7 @@ const pool = new Pool({
   ssl: false,
 });
 
-const drizzleSeed = drizzle(pool, { schema });
+const drizzleSeed: typeof sqliteDb | typeof postgresDb = getDbInstance();
 
 async function seed() {
   const jsonRepository = new JsonPostRepository();
@@ -22,11 +23,19 @@ async function seed() {
 
   //Reset database seeding
   try {
-    await drizzleSeed.delete(postsTable); //delete all posts table
-    await drizzleSeed.insert(postsTable).values(posts);
-    console.log(
-      'Seed completed successfully! Some posts have been added to the database.',
-    );
+    if (drizzleSeed instanceof NodePgDatabase) {
+      await drizzleSeed.delete(postgresPostsTable); //delete all posts table
+      await drizzleSeed.insert(postgresPostsTable).values(posts);
+      console.log(
+        '[Postgres] Seed completed successfully! Some posts have been added to the database.',
+      );
+    } else {
+      await drizzleSeed.delete(sqlitePostsTable); //delete all posts table
+      await drizzleSeed.insert(sqlitePostsTable).values(posts);
+      console.log(
+        '[Sqlite] Seed completed successfully! Some posts have been added to the database.',
+      );
+    }
   } catch (e) {
     console.log(e);
   } finally {
