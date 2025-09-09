@@ -1,17 +1,17 @@
 import { PostModel, UpdatePostModel } from '@/models/post/post-model';
 import { PostRepository } from './post-repository';
-import { db } from '@/db/drizzle';
 import { asyncDelay } from '@/utils/async-delay';
-import { postsTable } from '@/db/drizzle/schemas';
 import { eq } from 'drizzle-orm';
+import { sqliteDb } from '@/db/drizzle';
+import { sqlitePostsTable } from '@/db/drizzle/schemas/sqlite-schemas';
 
 const responseDelayInMS = Number(process.env.RESPONSE_DELAY_IN_MS) || 0;
 
-export class DrizzlePostsRepository implements PostRepository {
+export class SqlitePostsRepository implements PostRepository {
   async findAllPublic(): Promise<PostModel[]> {
     await asyncDelay(responseDelayInMS, true);
 
-    const posts = await db.query.postsTable.findMany({
+    const posts = await sqliteDb.query.postsTable.findMany({
       orderBy: (posts, { desc }) => desc(posts.createdAt),
       where: (posts, { eq }) => eq(posts.published, true),
     });
@@ -22,7 +22,7 @@ export class DrizzlePostsRepository implements PostRepository {
   async findBySlugPublic(slug: string): Promise<PostModel> {
     await asyncDelay(responseDelayInMS, true);
 
-    const post = await db.query.postsTable.findFirst({
+    const post = await sqliteDb.query.postsTable.findFirst({
       where: (post, { eq, and }) =>
         and(eq(post.published, true), eq(post.slug, slug)),
     });
@@ -35,7 +35,7 @@ export class DrizzlePostsRepository implements PostRepository {
   async findAll(): Promise<PostModel[]> {
     await asyncDelay(responseDelayInMS, true);
 
-    const posts = await db.query.postsTable.findMany({
+    const posts = await sqliteDb.query.postsTable.findMany({
       orderBy: (posts, { desc }) => desc(posts.createdAt),
     });
     return posts;
@@ -44,7 +44,7 @@ export class DrizzlePostsRepository implements PostRepository {
   async findById(id: string): Promise<PostModel> {
     await asyncDelay(responseDelayInMS, true);
 
-    const post = await db.query.postsTable.findFirst({
+    const post = await sqliteDb.query.postsTable.findFirst({
       where: (post, { eq }) => eq(post.id, id),
     });
 
@@ -57,7 +57,9 @@ export class DrizzlePostsRepository implements PostRepository {
     await asyncDelay(responseDelayInMS, true);
 
     const post = await this.findById(id);
-    await db.delete(postsTable).where(eq(postsTable.id, post.id));
+    await sqliteDb
+      .delete(sqlitePostsTable)
+      .where(eq(sqlitePostsTable.id, post.id));
 
     return post;
   }
@@ -65,7 +67,7 @@ export class DrizzlePostsRepository implements PostRepository {
   async createPost(post: PostModel): Promise<PostModel> {
     await asyncDelay(responseDelayInMS, true);
 
-    const postExists = await db.query.postsTable.findFirst({
+    const postExists = await sqliteDb.query.postsTable.findFirst({
       where: (postFound, { or, eq }) =>
         or(eq(postFound.id, post.id), eq(postFound.slug, post.slug)),
       columns: { id: true },
@@ -75,7 +77,7 @@ export class DrizzlePostsRepository implements PostRepository {
       throw new Error('Um post com esse ID ou Slug já existe na base de dados');
     }
 
-    await db.insert(postsTable).values(post);
+    await sqliteDb.insert(sqlitePostsTable).values(post);
     return post;
   }
 
@@ -93,7 +95,10 @@ export class DrizzlePostsRepository implements PostRepository {
       updatedAt,
     };
 
-    await db.update(postsTable).set(updateData).where(eq(postsTable.id, id));
+    await sqliteDb
+      .update(sqlitePostsTable)
+      .set(updateData)
+      .where(eq(sqlitePostsTable.id, id));
 
     return {
       ...postFound,

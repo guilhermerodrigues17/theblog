@@ -1,4 +1,13 @@
-import { DrizzlePostsRepository } from './drizzle-posts-repository';
 import { PostRepository } from './post-repository';
+import { PostgresPostsRepository } from './postgres-posts-repository';
+import { SqlitePostsRepository } from './sqlite-posts-repository';
 
-export const postRepository: PostRepository = new DrizzlePostsRepository();
+const dbProvider = process.env.DATABASE_PROVIDER || 'pg';
+
+export const postRepository = createPostRepository();
+
+function createPostRepository(): PostRepository {
+  return dbProvider === 'pg'
+    ? new PostgresPostsRepository()
+    : new SqlitePostsRepository();
+}
