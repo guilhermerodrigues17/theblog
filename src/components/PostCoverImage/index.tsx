@@ -26,13 +26,7 @@ export function PostCoverImage({
 }: PostCoverImageProps) {
   return (
     <Link
-      className={clsx(
-        'w-full',
-        'h-full',
-        'overflow-hidden',
-        'rounded-xl',
-        linkClassName,
-      )}
+      className={clsx('w-full', 'overflow-hidden', 'rounded-xl', linkClassName)}
       href={href}
     >
       <Image
