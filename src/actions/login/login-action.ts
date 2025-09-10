@@ -1,7 +1,7 @@
 'use server';
 
-import { createLoginSession, verifyPassword } from '@/lib/login/manage-login';
-import { asyncDelay } from '@/utils/async-delay';
+import { createLoginSession } from '@/lib/login/manage-login';
+import { verifyPassword } from '@/lib/login/password-hashing';
 import { redirect } from 'next/navigation';
 
 type LoginActionState = {
@@ -10,8 +10,6 @@ type LoginActionState = {
 };
 
 export async function loginAction(state: LoginActionState, formData: FormData) {
-  await asyncDelay(3000);
-
   if (!(formData instanceof FormData)) {
     return {
       username: '',
@@ -30,7 +28,7 @@ export async function loginAction(state: LoginActionState, formData: FormData) {
   }
 
   const isUsernameValid = username === process.env.LOGIN_USER;
-  const isPasswordValid = verifyPassword(
+  const isPasswordValid = await verifyPassword(
     password,
     process.env.LOGIN_PASSWORD || '',
   );
