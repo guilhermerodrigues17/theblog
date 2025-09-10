@@ -45,3 +45,6 @@ public/upload/
 
 # db
 sqlite.db
+
+#nginx
+nginx.conf
