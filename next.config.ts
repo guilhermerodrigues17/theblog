@@ -10,6 +10,13 @@ const nextConfig: NextConfig = {
         pathname: '/**',
         search: '',
       },
+      {
+        protocol: 'https',
+        hostname: 'theblog.guilhermerodriguesm.com.br',
+        port: '',
+        pathname: '/**',
+        search: '',
+      },
     ],
   },
 };
