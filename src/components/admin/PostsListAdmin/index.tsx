@@ -17,7 +17,7 @@ export default async function PostsListAdmin() {
   }
 
   return (
-    <div className='flex flex-col gap-4'>
+    <div className='flex flex-col gap-4 mb-8'>
       {posts.map(post => {
         return (
           <div

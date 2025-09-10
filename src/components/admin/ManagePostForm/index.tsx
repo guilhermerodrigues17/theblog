@@ -80,7 +80,7 @@ export function ManagePostForm(props: ManagePostFormProps) {
 
   return (
     <form action={action}>
-      <div className='flex flex-col gap-6'>
+      <div className='flex flex-col gap-6 mb-8'>
         <DefaultInput
           type='text'
           labelText='ID'
