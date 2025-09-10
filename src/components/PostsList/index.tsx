@@ -12,7 +12,7 @@ export async function PostsList() {
       {posts.slice(1).map(post => {
         const postLink = `/post/${post.slug}`;
         return (
-          <div className='flex flex-col gap-4 mb-4 group' key={post.id}>
+          <div className='flex flex-col gap-4 mb-8 group' key={post.id}>
             <PostCoverImage
               href={postLink}
               alt={post.title}
