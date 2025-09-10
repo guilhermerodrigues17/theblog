@@ -33,6 +33,7 @@ export function PostCoverImage({
         className={clsx(
           'w-full',
           'h-full',
+          'aspect-[4/3]',
           'object-cover',
           'object-center',
           'group-hover:scale-105',
