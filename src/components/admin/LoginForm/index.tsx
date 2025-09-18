@@ -4,6 +4,7 @@ import { loginAction } from '@/actions/login/login-action';
 import { DefaultButton } from '@/components/DefaultButton';
 import { DefaultInput } from '@/components/DefaultInput';
 import { LogInIcon } from 'lucide-react';
+import Link from 'next/link';
 import { useActionState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
@@ -40,10 +41,25 @@ export function LoginForm() {
         disabled={isPending}
       />
 
-      <DefaultButton type='submit' variant='default' disabled={isPending}>
+      <DefaultButton
+        className='mt-6'
+        type='submit'
+        variant='default'
+        disabled={isPending}
+      >
         <LogInIcon />
         Entrar
       </DefaultButton>
+
+      <p className='text-sm/tight text-center '>
+        <span>Não possui uma conta? </span>
+        <Link
+          className='hover:underline transition text-blue-600'
+          href={'/user/new'}
+        >
+          Cadastre-se
+        </Link>
+      </p>
     </form>
   );
 }

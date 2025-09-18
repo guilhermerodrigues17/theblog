@@ -26,7 +26,7 @@ export function CreateUserForm() {
   return (
     <div
       className={clsx(
-        'flex items-center justify-center text-center',
+        'flex items-center justify-center',
         'max-w-sm mx-auto mt-16',
       )}
     >
@@ -70,13 +70,19 @@ export function CreateUserForm() {
           required
         />
 
-        <DefaultButton className='my-6' type='submit' disabled={isPending}>
+        <DefaultButton className='mt-6' type='submit' disabled={isPending}>
           <User2Icon />
           Criar conta
         </DefaultButton>
 
-        <p className='text-sm/tight'>
-          <Link href={'/login'}>Já possui uma conta? Entrar</Link>
+        <p className='text-sm/tight text-center '>
+          <span>Já possui uma conta? </span>
+          <Link
+            className='hover:underline transition text-blue-600'
+            href={'/login'}
+          >
+            Entrar
+          </Link>
         </p>
       </form>
     </div>
