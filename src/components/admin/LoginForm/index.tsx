@@ -10,27 +10,28 @@ import { toast } from 'react-toastify';
 
 export function LoginForm() {
   const initialState = {
-    username: '',
-    error: '',
+    email: '',
+    errors: [],
   };
   const [state, action, isPending] = useActionState(loginAction, initialState);
 
   useEffect(() => {
-    if (state.error) {
+    if (state.errors.length > 0) {
       toast.dismiss();
-      toast.error(state.error);
+      state.errors.forEach(err => toast.error(err));
     }
   }, [state]);
 
   return (
     <form action={action} className='flex-1 flex flex-col gap-6'>
       <DefaultInput
-        type='text'
-        name='username'
-        labelText='Usuário'
-        placeholder='Insira seu nome de usuário'
+        type='email'
+        name='email'
+        labelText='E-mail'
+        placeholder='Insira seu e-mail'
         disabled={isPending}
-        defaultValue={state.username}
+        defaultValue={state.email}
+        required
       />
 
       <DefaultInput
@@ -39,6 +40,7 @@ export function LoginForm() {
         labelText='Senha'
         placeholder='Insira sua senha'
         disabled={isPending}
+        required
       />
 
       <DefaultButton

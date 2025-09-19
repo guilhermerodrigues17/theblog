@@ -1,45 +1,56 @@
 'use server';
 
-import { createLoginSession } from '@/lib/login/manage-login';
-import { verifyPassword } from '@/lib/login/password-hashing';
+import { createLoginSessionFromApi } from '@/lib/login/manage-login';
+import { LoginSchema } from '@/lib/login/schemas';
+import { apiRequest } from '@/utils/api-request';
+import { getZodMessageError } from '@/utils/get-zod-error-message';
 import { redirect } from 'next/navigation';
 
 type LoginActionState = {
-  username: string;
-  error: string;
+  email: string;
+  errors: string[];
 };
 
-export async function loginAction(state: LoginActionState, formData: FormData) {
+export async function loginAction(
+  state: LoginActionState,
+  formData: FormData,
+): Promise<LoginActionState> {
   if (!(formData instanceof FormData)) {
     return {
-      username: '',
-      error: 'Dados inválidos',
+      email: '',
+      errors: ['Dados inválidos'],
     };
   }
 
-  const username = formData.get('username')?.toString().trim() || '';
-  const password = formData.get('password')?.toString().trim() || '';
+  const loginFormObj = Object.fromEntries(formData.entries());
+  const formEmail = loginFormObj?.email?.toString() || '';
+  const loginData = LoginSchema.safeParse(loginFormObj);
 
-  if (!username || !password) {
+  if (!loginData.success) {
     return {
-      username,
-      error: 'Digite o nome de usuário e a senha...',
+      email: formEmail,
+      errors: getZodMessageError(loginData.error),
     };
   }
 
-  const isUsernameValid = username === process.env.LOGIN_USER;
-  const isPasswordValid = await verifyPassword(
-    password,
-    process.env.LOGIN_PASSWORD || '',
+  const loginResponse = await apiRequest<{ accessToken: string }>(
+    '/auth/login',
+    {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(loginData.data),
+    },
   );
 
-  if (!isUsernameValid || !isPasswordValid) {
+  if (!loginResponse.success) {
     return {
-      username,
-      error: 'Nome de usuário ou senha inválidos!',
+      email: formEmail,
+      errors: loginResponse.errors,
     };
   }
 
-  await createLoginSession(username);
+  await createLoginSessionFromApi(loginResponse.data.accessToken);
   redirect('/admin/post');
 }

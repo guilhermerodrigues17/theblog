@@ -68,3 +68,35 @@ export async function verifyJwt(jwt: string | undefined = '') {
     return false;
   }
 }
+
+// manage-login methods to api backend
+
+export async function createLoginSessionFromApi(acessToken: string) {
+  const expiresIn = new Date(Date.now() + loginExpSeconds * 1000);
+  const loginSession = acessToken;
+  const cookieStore = await cookies();
+
+  cookieStore.set(loginCookieName, loginSession, {
+    httpOnly: true,
+    secure: true,
+    sameSite: 'strict',
+    expires: expiresIn,
+  });
+}
+
+export async function verifyLoginSessionFromApi() {
+  const cookieStore = await cookies();
+
+  const acessToken = cookieStore.get(loginCookieName)?.value;
+  if (!acessToken) return false;
+
+  return acessToken;
+}
+
+export async function requireLoginSession() {
+  const isAuthenticated = await verifyLoginSessionFromApi();
+
+  if (!isAuthenticated) {
+    redirect('/login');
+  }
+}
