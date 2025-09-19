@@ -5,8 +5,16 @@ import { DeletePostBtn } from '../DeletePostBtn';
 import { ErrorMessage } from '@/components/ErrorMessage';
 
 export default async function PostsListAdmin() {
-  const posts = await findAllPostsAdmin();
+  const postsResponse = await findAllPostsAdmin();
 
+  if (!postsResponse.success) {
+    console.log(postsResponse.errors);
+    return (
+      <ErrorMessage contentTitle='🤔' content='Tente fazer login novamente' />
+    );
+  }
+
+  const posts = postsResponse.data;
   if (posts.length <= 0) {
     return (
       <ErrorMessage

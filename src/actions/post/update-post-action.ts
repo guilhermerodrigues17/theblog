@@ -1,18 +1,17 @@
 'use server';
 
+import { verifyLoginSessionFromApi } from '@/lib/login/manage-login';
 import {
-  makePartialPostDto,
-  makePostDto,
-  PostDto,
-} from '@/dto/post/general-dto';
-import { verifyLoginSession } from '@/lib/login/manage-login';
-import { PostUpdateSchema } from '@/lib/post/validations';
-import { postRepository } from '@/repositories/post';
+  PublicPostDto,
+  PublicPostSchema,
+  UpdatePostSchema,
+} from '@/lib/post/schemas';
+import { authenticatedApiRequest } from '@/utils/authenticated-api-request';
 import { getZodMessageError } from '@/utils/get-zod-error-message';
 import { revalidateTag } from 'next/cache';
 
 type UpdatePostActionState = {
-  formState: PostDto;
+  formState: PublicPostDto;
   errors: string[];
   success?: true;
 };
@@ -21,7 +20,7 @@ export async function updatePostAction(
   prevState: UpdatePostActionState,
   formData: FormData,
 ): Promise<UpdatePostActionState> {
-  const isAuthenticated = await verifyLoginSession();
+  const isAuthenticated = await verifyLoginSessionFromApi();
 
   if (!(formData instanceof FormData)) {
     return {
@@ -39,12 +38,12 @@ export async function updatePostAction(
   }
 
   const formDataToObj = Object.fromEntries(formData.entries());
-  const zodParsedObj = PostUpdateSchema.safeParse(formDataToObj);
+  const zodParsedObj = UpdatePostSchema.safeParse(formDataToObj);
 
   if (!isAuthenticated) {
     return {
       errors: ['Sua sessão expirou! Refaça o login em outra aba'],
-      formState: makePartialPostDto(formDataToObj),
+      formState: PublicPostSchema.parse(formDataToObj),
     };
   }
 
@@ -52,7 +51,7 @@ export async function updatePostAction(
     const errors = getZodMessageError(zodParsedObj.error);
     return {
       errors,
-      formState: makePartialPostDto(formDataToObj),
+      formState: PublicPostSchema.parse(formDataToObj),
     };
   }
 
@@ -61,26 +60,31 @@ export async function updatePostAction(
     ...validPostData,
   };
 
-  let updatedPost;
-  try {
-    updatedPost = await postRepository.updatePost(id, updateData);
-    revalidateTag('posts');
-    revalidateTag(`post-${updatedPost.slug}`);
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      return {
-        formState: makePartialPostDto(updateData),
-        errors: [e.message],
-      };
-    }
+  const updatePostResponse = await authenticatedApiRequest<PublicPostDto>(
+    `/post/me/${id}`,
+    {
+      method: 'PATCH',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updateData),
+    },
+  );
+
+  if (!updatePostResponse.success) {
     return {
-      formState: makePartialPostDto(updateData),
-      errors: ['Ocorreu um erro...'],
+      formState: PublicPostSchema.parse(formDataToObj),
+      errors: updatePostResponse.errors,
     };
   }
 
+  const updatedPost = updatePostResponse.data;
+
+  revalidateTag('posts');
+  revalidateTag(`post-${updatedPost.slug}`);
+
   return {
-    formState: makePostDto(updatedPost),
+    formState: PublicPostSchema.parse(updatedPost),
     errors: [],
     success: true,
   };

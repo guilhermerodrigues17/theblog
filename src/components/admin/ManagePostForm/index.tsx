@@ -6,11 +6,11 @@ import { InputCheckbox } from '@/components/InputCheckbox';
 import { MarkdownEditor } from '@/components/MarkdownEditor';
 import { useActionState, useEffect, useState } from 'react';
 import { ImageUploader } from '../ImageUploader';
-import { makePartialPostDto, PostDto } from '@/dto/post/general-dto';
 import { createPostAction } from '@/actions/post/create-post-action';
 import { toast } from 'react-toastify';
 import { updatePostAction } from '@/actions/post/update-post-action';
 import { useRouter, useSearchParams } from 'next/navigation';
+import { PublicPostDto, PublicPostSchema } from '@/lib/post/schemas';
 
 type ManagePostCreateFormProps = {
   mode: 'create';
@@ -18,7 +18,7 @@ type ManagePostCreateFormProps = {
 
 type ManagePostUpdateFormProps = {
   mode: 'update';
-  post: PostDto;
+  post: PublicPostDto;
 };
 
 type ManagePostFormProps =
@@ -42,7 +42,7 @@ export function ManagePostForm(props: ManagePostFormProps) {
   };
 
   const initialState = {
-    formState: makePartialPostDto(post),
+    formState: PublicPostSchema.parse(post || {}),
     errors: [],
   };
 
@@ -103,15 +103,6 @@ export function ManagePostForm(props: ManagePostFormProps) {
 
         <DefaultInput
           type='text'
-          labelText='Autor'
-          placeholder='Escreva o nome do autor do post...'
-          name='author'
-          defaultValue={formState.author}
-          disabled={isPending}
-        />
-
-        <DefaultInput
-          type='text'
           labelText='Título'
           placeholder='Escreva um título para o seu post...'
           name='title'
@@ -147,13 +138,15 @@ export function ManagePostForm(props: ManagePostFormProps) {
           disabled={isPending}
         />
 
-        <InputCheckbox
-          type='checkbox'
-          labelText='Publicar?'
-          name='published'
-          defaultChecked={formState.published}
-          disabled={isPending}
-        />
+        {mode === 'update' && (
+          <InputCheckbox
+            type='checkbox'
+            labelText='Publicar?'
+            name='published'
+            defaultChecked={formState.published}
+            disabled={isPending}
+          />
+        )}
 
         <div className='mt-6'>
           <DefaultButton type='submit' disabled={isPending}>

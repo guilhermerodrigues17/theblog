@@ -1,11 +1,12 @@
 'use server';
 
-import { verifyLoginSession } from '@/lib/login/manage-login';
-import { postRepository } from '@/repositories/post';
+import { verifyLoginSessionFromApi } from '@/lib/login/manage-login';
+import { PublicPostDto } from '@/lib/post/schemas';
+import { authenticatedApiRequest } from '@/utils/authenticated-api-request';
 import { revalidateTag } from 'next/cache';
 
 export async function deletePostAction(id: string) {
-  const isAuthenticated = await verifyLoginSession();
+  const isAuthenticated = await verifyLoginSessionFromApi();
 
   if (!isAuthenticated) {
     return {
@@ -19,18 +20,23 @@ export async function deletePostAction(id: string) {
     };
   }
 
-  try {
-    const postDeleted = await postRepository.deletePost(id);
+  const deletePostResponse = await authenticatedApiRequest<PublicPostDto>(
+    `/post/me/${id}`,
+    {
+      method: 'DELETE',
+    },
+  );
 
-    revalidateTag('posts');
-    revalidateTag(`post-${postDeleted.slug}`);
-  } catch (e: unknown) {
-    if (e instanceof Error) {
-      return {
-        error: e.message,
-      };
-    }
+  if (!deletePostResponse.success) {
+    return {
+      error: 'Erro ao apagar o post',
+    };
   }
+
+  const responseData = deletePostResponse.data;
+
+  revalidateTag('posts');
+  revalidateTag(`post-${responseData.slug}`);
 
   return {
     error: '',

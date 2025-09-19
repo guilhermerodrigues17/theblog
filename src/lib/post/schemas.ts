@@ -1,6 +1,7 @@
 import z from 'zod';
 import sanitize from 'sanitize-html';
 import { isUrlOrRelativePath } from '@/utils/is-url-or-relative-path';
+import { PublicUserDataSchema } from '../user/schemas';
 
 const PostBaseSchema = z.object({
   title: z
@@ -40,6 +41,30 @@ const PostBaseSchema = z.object({
     .transform(val => val === 'on' || val === 'true' || val === true),
 });
 
-export const PostCreateSchema = PostBaseSchema;
+export const CreatePostSchema = PostBaseSchema.omit({
+  author: true,
+  published: true,
+}).extend({});
 
-export const PostUpdateSchema = PostBaseSchema.extend({});
+export const UpdatePostSchema = PostBaseSchema.omit({
+  author: true,
+}).extend({});
+
+export const PublicPostSchema = PostBaseSchema.extend({
+  id: z.string().default(''),
+  slug: z.string().default(''),
+  title: z.string().default(''),
+  excerpt: z.string().default(''),
+  author: PublicUserDataSchema.optional().default({
+    id: '',
+    name: '',
+    email: '',
+  }),
+  content: z.string().default(''),
+  coverImageUrl: z.string().default(''),
+  createdAt: z.string().default(''),
+});
+
+export type CreatePostDto = z.infer<typeof CreatePostSchema>;
+export type UpdatePostDto = z.infer<typeof UpdatePostSchema>;
+export type PublicPostDto = z.infer<typeof PublicPostSchema>;
