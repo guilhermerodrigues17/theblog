@@ -5,6 +5,7 @@ import { DefaultButton } from '@/components/DefaultButton';
 import { DefaultInput } from '@/components/DefaultInput';
 import { LogInIcon } from 'lucide-react';
 import Link from 'next/link';
+import { useRouter, useSearchParams } from 'next/navigation';
 import { useActionState, useEffect } from 'react';
 import { toast } from 'react-toastify';
 
@@ -14,6 +15,10 @@ export function LoginForm() {
     errors: [],
   };
   const [state, action, isPending] = useActionState(loginAction, initialState);
+  const queryParam = useSearchParams();
+  const router = useRouter();
+  const userChanged = queryParam.get('userChanged');
+  const created = queryParam.get('created');
 
   useEffect(() => {
     if (state.errors.length > 0) {
@@ -21,6 +26,24 @@ export function LoginForm() {
       state.errors.forEach(err => toast.error(err));
     }
   }, [state]);
+
+  useEffect(() => {
+    if (created === '1') {
+      toast.dismiss();
+      toast.info('Conta criada com sucesso. Faça login');
+      const url = new URL(window.location.href);
+      url.searchParams.delete('created');
+      router.replace(url.toString());
+    }
+
+    if (userChanged === '1') {
+      toast.dismiss();
+      toast.info('Seus dados foram alterados. Faça login novamente');
+      const url = new URL(window.location.href);
+      url.searchParams.delete('userChanged');
+      router.replace(url.toString());
+    }
+  }, [router, created, userChanged]);
 
   return (
     <form action={action} className='flex-1 flex flex-col gap-6'>
