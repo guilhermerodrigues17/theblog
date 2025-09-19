@@ -48,3 +48,5 @@ sqlite.db
 
 #nginx
 nginx.conf
+
+steps.md
