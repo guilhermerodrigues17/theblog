@@ -4,11 +4,19 @@ import { PostDetails } from '../PostDetails';
 import { ErrorMessage } from '../ErrorMessage';
 
 export async function FeaturedPost() {
-  const posts = await findAllPublicPostsCached();
+  const postsResponse = await findAllPublicPostsCached();
+  const noPostsFound = (
+    <ErrorMessage contentTitle='Ops.' content='Nenhum post foi encontrado.' />
+  );
+
+  if (!postsResponse.success) {
+    return noPostsFound;
+  }
+
+  const posts = postsResponse.data;
+
   if (posts.length <= 0) {
-    return (
-      <ErrorMessage contentTitle='Ops.' content='Nenhum post foi encontrado.' />
-    );
+    return noPostsFound;
   }
 
   const post = posts[0];

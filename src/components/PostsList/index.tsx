@@ -3,7 +3,13 @@ import { PostDetails } from '../PostDetails';
 import { findAllPublicPostsCached } from '@/lib/post/queries/public';
 
 export async function PostsList() {
-  const posts = await findAllPublicPostsCached();
+  const postsResponse = await findAllPublicPostsCached();
+
+  if (!postsResponse.success) {
+    return null;
+  }
+
+  const posts = postsResponse.data;
 
   if (posts.length <= 1) return null;
 

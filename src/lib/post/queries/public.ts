@@ -1,29 +1,27 @@
-import { postRepository } from '@/repositories/post';
-import { unstable_cache } from 'next/cache';
-import { notFound } from 'next/navigation';
+import { ExternalPostModel } from '@/models/post/post-model';
+import { apiRequest } from '@/utils/api-request';
 import { cache } from 'react';
 
-export const findAllPublicPostsCached = cache(
-  unstable_cache(
-    async () => {
-      return postRepository.findAllPublic();
+export const findAllPublicPostsCached = cache(async () => {
+  const postsResponse = await apiRequest<ExternalPostModel[]>('/post', {
+    method: 'GET',
+    next: {
+      tags: ['posts'],
+      revalidate: 86400,
     },
-    ['posts'],
-    { tags: ['posts'] },
-  ),
-);
+  });
 
-export const findPublicPostBySlugCached = cache((slug: string) => {
-  return unstable_cache(
-    async (slug: string) => {
-      const post = await postRepository
-        .findBySlugPublic(slug)
-        .catch(() => undefined);
-      if (!post) notFound();
+  return postsResponse;
+});
 
-      return post;
+export const findPublicPostBySlugCached = cache(async (slug: string) => {
+  const postsResponse = await apiRequest<ExternalPostModel>(`/post/${slug}`, {
+    method: 'GET',
+    next: {
+      tags: [`post-${slug}`],
+      revalidate: 86400,
     },
-    [`post-${slug}`],
-    { tags: [`post-${slug}`] },
-  )(slug);
+  });
+
+  return postsResponse;
 });
