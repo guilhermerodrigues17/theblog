@@ -1,23 +1,13 @@
 'use client';
-import { logoutAction } from '@/actions/login/logout-action';
 import clsx from 'clsx';
-import {
-  FileTextIcon,
-  HomeIcon,
-  HourglassIcon,
-  LogOutIcon,
-  MenuIcon,
-  PlusCircleIcon,
-  XIcon,
-} from 'lucide-react';
+import { FileTextIcon, MenuIcon, PlusCircleIcon, XIcon } from 'lucide-react';
 import Link from 'next/link';
 import { usePathname } from 'next/navigation';
-import React, { useEffect, useState, useTransition } from 'react';
+import { useEffect, useState } from 'react';
 
 export function MenuAdmin() {
   const [isExpanded, setIsExpanded] = useState(false);
   const pathname = usePathname();
-  const [isPending, startTransition] = useTransition();
 
   useEffect(() => {
     setIsExpanded(false);
@@ -46,13 +36,6 @@ export function MenuAdmin() {
     'transition-all duration-300',
   );
 
-  function handleLogout(e: React.MouseEvent<HTMLAnchorElement, MouseEvent>) {
-    e.preventDefault();
-    startTransition(async () => {
-      logoutAction();
-    });
-  }
-
   return (
     <nav className={navStyles}>
       <button className={menuBtnStyles} onClick={() => setIsExpanded(s => !s)}>
@@ -67,10 +50,6 @@ export function MenuAdmin() {
         </div>
       </button>
 
-      <Link className={linkStyles} href='/' target='_blank'>
-        <HomeIcon size={20} />
-      </Link>
-
       <Link className={linkStyles} href='/admin/post'>
         <FileTextIcon size={20} />
       </Link>
@@ -78,20 +57,6 @@ export function MenuAdmin() {
       <Link className={linkStyles} href='/admin/post/new'>
         <PlusCircleIcon size={20} />
       </Link>
-
-      <a href='#' className={linkStyles} onClick={handleLogout}>
-        {isPending && (
-          <>
-            <HourglassIcon size={20} />
-          </>
-        )}
-
-        {!isPending && (
-          <>
-            <LogOutIcon size={20} />
-          </>
-        )}
-      </a>
     </nav>
   );
 }
