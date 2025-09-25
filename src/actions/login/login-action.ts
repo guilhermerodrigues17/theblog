@@ -4,6 +4,7 @@ import { createLoginSessionFromApi } from '@/lib/login/manage-login';
 import { LoginSchema } from '@/lib/login/schemas';
 import { apiRequest } from '@/utils/api-request';
 import { getZodMessageError } from '@/utils/get-zod-error-message';
+import { verifyIsBot } from '@/utils/verify-is-bot';
 import { redirect } from 'next/navigation';
 
 type LoginActionState = {
@@ -15,6 +16,14 @@ export async function loginAction(
   state: LoginActionState,
   formData: FormData,
 ): Promise<LoginActionState> {
+  const isBot = await verifyIsBot(formData);
+  if (isBot) {
+    return {
+      email: '',
+      errors: ['error'],
+    };
+  }
+
   if (!(formData instanceof FormData)) {
     return {
       email: '',

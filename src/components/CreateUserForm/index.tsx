@@ -8,6 +8,7 @@ import { useActionState, useEffect } from 'react';
 import { createUserAction } from '@/actions/user/create-user-action';
 import { PublicUserDataSchema } from '@/lib/user/schemas';
 import { toast } from 'react-toastify';
+import { HoneypotInput } from '../HoneypotInput';
 
 export function CreateUserForm() {
   const [state, action, isPending] = useActionState(createUserAction, {
@@ -69,6 +70,8 @@ export function CreateUserForm() {
           disabled={isPending}
           required
         />
+
+        <HoneypotInput />
 
         <DefaultButton className='mt-6' type='submit' disabled={isPending}>
           <User2Icon />

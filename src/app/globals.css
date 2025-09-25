@@ -10,3 +10,9 @@
 .scrollbar-hide {
   scrollbar-width: none;
 }
+
+@layer utilities {
+  .inputHp {
+    @apply pointer-events-none absolute w-0 h-0 overflow-hidden opacity-0;
+  }
+}

@@ -3,6 +3,7 @@
 import { loginAction } from '@/actions/login/login-action';
 import { DefaultButton } from '@/components/DefaultButton';
 import { DefaultInput } from '@/components/DefaultInput';
+import { HoneypotInput } from '@/components/HoneypotInput';
 import { LogInIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -65,6 +66,8 @@ export function LoginForm() {
         disabled={isPending}
         required
       />
+
+      <HoneypotInput />
 
       <DefaultButton
         className='mt-6'

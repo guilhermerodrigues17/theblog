@@ -7,6 +7,7 @@ import {
 } from '@/lib/user/schemas';
 import { apiRequest } from '@/utils/api-request';
 import { getZodMessageError } from '@/utils/get-zod-error-message';
+import { verifyIsBot } from '@/utils/verify-is-bot';
 import { redirect } from 'next/navigation';
 
 type CreateUserActionState = {
@@ -19,6 +20,15 @@ export async function createUserAction(
   state: CreateUserActionState,
   formData: FormData,
 ): Promise<CreateUserActionState> {
+  const isBot = await verifyIsBot(formData);
+  if (isBot) {
+    return {
+      user: state.user,
+      errors: ['error'],
+      success: false,
+    };
+  }
+
   if (!(formData instanceof FormData)) {
     return {
       user: state.user,
