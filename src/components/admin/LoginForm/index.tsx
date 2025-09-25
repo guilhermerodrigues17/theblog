@@ -4,6 +4,7 @@ import { loginAction } from '@/actions/login/login-action';
 import { DefaultButton } from '@/components/DefaultButton';
 import { DefaultInput } from '@/components/DefaultInput';
 import { HoneypotInput } from '@/components/HoneypotInput';
+import clsx from 'clsx';
 import { LogInIcon } from 'lucide-react';
 import Link from 'next/link';
 import { useRouter, useSearchParams } from 'next/navigation';
@@ -47,47 +48,54 @@ export function LoginForm() {
   }, [router, created, userChanged]);
 
   return (
-    <form action={action} className='flex-1 flex flex-col gap-6'>
-      <DefaultInput
-        type='email'
-        name='email'
-        labelText='E-mail'
-        placeholder='Insira seu e-mail'
-        disabled={isPending}
-        defaultValue={state.email}
-        required
-      />
+    <div
+      className={clsx(
+        'flex items-center justify-center',
+        'max-w-sm mt-16 mx-auto',
+      )}
+    >
+      <form action={action} className='flex-1 flex flex-col gap-6'>
+        <DefaultInput
+          type='email'
+          name='email'
+          labelText='E-mail'
+          placeholder='Insira seu e-mail'
+          disabled={isPending}
+          defaultValue={state.email}
+          required
+        />
 
-      <DefaultInput
-        type='password'
-        name='password'
-        labelText='Senha'
-        placeholder='Insira sua senha'
-        disabled={isPending}
-        required
-      />
+        <DefaultInput
+          type='password'
+          name='password'
+          labelText='Senha'
+          placeholder='Insira sua senha'
+          disabled={isPending}
+          required
+        />
 
-      <HoneypotInput />
+        <HoneypotInput />
 
-      <DefaultButton
-        className='mt-6'
-        type='submit'
-        variant='default'
-        disabled={isPending}
-      >
-        <LogInIcon />
-        Entrar
-      </DefaultButton>
-
-      <p className='text-sm/tight text-center '>
-        <span>Não possui uma conta? </span>
-        <Link
-          className='hover:underline transition text-blue-600'
-          href={'/user/new'}
+        <DefaultButton
+          className='mt-6'
+          type='submit'
+          variant='default'
+          disabled={isPending}
         >
-          Cadastre-se
-        </Link>
-      </p>
-    </form>
+          <LogInIcon />
+          Entrar
+        </DefaultButton>
+
+        <p className='text-sm/tight text-center '>
+          <span>Não possui uma conta? </span>
+          <Link
+            className='hover:underline transition text-blue-600'
+            href={'/user/new'}
+          >
+            Cadastre-se
+          </Link>
+        </p>
+      </form>
+    </div>
   );
 }
