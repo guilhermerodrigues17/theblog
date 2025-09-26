@@ -51,7 +51,7 @@ export function UpdateUserForm({ user }: UpdateUserFormProps) {
     startTransition(async () => {
       const result = await deleteUserAction();
 
-      if (result.errors) {
+      if (result.errors.length > 0) {
         toast.dismiss();
         result.errors.forEach(err => toast.error(err));
       }

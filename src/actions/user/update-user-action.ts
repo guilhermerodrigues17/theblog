@@ -77,7 +77,7 @@ export async function updateUserAction(
 
   return {
     user: PublicUserDataSchema.parse(updateResponse.data),
-    errors: [''],
+    errors: [],
     success: true,
   };
 }
