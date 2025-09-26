@@ -78,7 +78,7 @@ export async function createLoginSessionFromApi(acessToken: string) {
 
   cookieStore.set(loginCookieName, loginSession, {
     httpOnly: true,
-    secure: true,
+    secure: process.env.NODE_ENV === 'production',
     sameSite: 'strict',
     expires: expiresIn,
   });
