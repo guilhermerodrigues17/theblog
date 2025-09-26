@@ -20,7 +20,7 @@ type ManageUserMenuProps = {
 export function ManageUserMenu({ isAuthenticated }: ManageUserMenuProps) {
   const [toggleMenu, setToggleMenu] = useState(false);
 
-  const containerRef = useRef(null);
+  const containerRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
 
   const listItemsStyles = clsx(
