@@ -14,11 +14,16 @@ export async function generateMetadata({
   params,
 }: PostSlugPageProps): Promise<Metadata> {
   const { slug } = await params;
-  const post = await findPublicPostBySlugCached(slug);
+  const postResponse = await findPublicPostBySlugCached(slug);
+  if (!postResponse.success) {
+    return {
+      title: 'Post não encontrado',
+    };
+  }
 
   return {
-    title: post.title,
-    description: post.excerpt,
+    title: postResponse.data.title,
+    description: postResponse.data.excerpt,
   };
 }
 
