@@ -19,14 +19,8 @@ type ManageUserMenuProps = {
 
 export function ManageUserMenu({ isAuthenticated }: ManageUserMenuProps) {
   const [toggleMenu, setToggleMenu] = useState(false);
-
   const containerRef = useRef<HTMLDivElement>(null);
   const pathname = usePathname();
-
-  const listItemsStyles = clsx(
-    'flex items-center gap-2 p-4',
-    'hover:bg-slate-800 cursor-pointer transition-all duration-200',
-  );
 
   async function handleLogout(e: React.MouseEvent<HTMLLIElement, MouseEvent>) {
     e.preventDefault();
@@ -50,6 +44,11 @@ export function ManageUserMenu({ isAuthenticated }: ManageUserMenuProps) {
   useEffect(() => {
     setToggleMenu(false);
   }, [pathname]);
+
+  const listItemsStyles = clsx(
+    'flex items-center gap-2 p-4',
+    'hover:bg-slate-800 cursor-pointer transition-all duration-200',
+  );
 
   return (
     <div className='relative' ref={containerRef}>
